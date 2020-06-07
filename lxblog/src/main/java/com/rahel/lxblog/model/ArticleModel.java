@@ -26,13 +26,13 @@ public class ArticleModel implements Serializable{
 
 	private Date updated_at=null;
 	
-	private List<Tag> tags;
+	private List<String> tags;
 	
 	public ArticleModel() {
 		
 	}
 	
-	public ArticleModel(Article article, List<Tag> tags) {
+	public ArticleModel(Article article, List<String> tags) {
 		this.id = article.getId();
 		this.title=article.getTitle();
 		this.title=article.getText();
@@ -100,11 +100,11 @@ public class ArticleModel implements Serializable{
 		this.updated_at = updated_at;
 	}
 
-	public List<Tag> getTags() {
+	public List<String> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<Tag> tags) {
+	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
 
