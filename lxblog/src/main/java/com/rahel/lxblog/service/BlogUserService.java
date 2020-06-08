@@ -46,6 +46,11 @@ public class BlogUserService{
 		}
 		return null;
 	}
+
+//	public void getUserIdByEmail(String userEmail) {
+		// TODO Auto-generated method stub
+		
+	//}
 	
 
 }

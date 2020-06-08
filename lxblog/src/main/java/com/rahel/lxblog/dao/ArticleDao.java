@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.rahel.lxblog.entity.Article;
@@ -14,9 +15,17 @@ import com.rahel.lxblog.entity.Tag_Article;
 public interface ArticleDao extends JpaRepository<Article, Tag_Article>{
 
 	ArrayList<Article> findAllByStatus(String status);
-//	List<Article> findAllByAuthor_id(Integer id);
+	
+	@Query("SELECT a FROM Article a where author_id=?1")
+	ArrayList<Article> findAllByAuthor_id(Integer author_id);
+	
 	List<Article> findAll();	
+	
 	Article save(Article article);
+	
 	Optional<Article> findById(Integer article_id);
-//	Article findByEmail(String email);
+	
+	Integer deleteById(Integer id);
+	
+	
 }
