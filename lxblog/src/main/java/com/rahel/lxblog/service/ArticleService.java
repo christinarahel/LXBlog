@@ -29,9 +29,8 @@ public class ArticleService {
 	@Autowired
 	private TagService tagService;
 	
-	
-	
-//	@Autowired  to add tags lists here
+
+//	  to add tags lists here
 	public List<ArticleModel> getAllPublicArticles(){
 		ArrayList<Article> articles = new ArrayList<>();
 		ArrayList<ArticleModel> articleModels = new ArrayList<>();
@@ -51,4 +50,41 @@ public class ArticleService {
 		}
 		return articleModels;
 	}
+
+	public void saveArticleModel(ArticleModel articleModel, String userEmail) {
+		Article article=getArticleFromModel(articleModel);
+		article.setCreated_at(new java.sql.Date(new java.util.Date().getTime()));  //adding when created
+		article.setAuthor_id(userDao.findByEmail(userEmail).getId());
+		article =articleDao.save(article);  
+		
+		System.out.println(article + "public void saveArticleModel(ArticleModel articleModel, String userEmail)");
+		
+		ArrayList<String> tags =(ArrayList<String>)articleModel.getTags();	
+		tagService.updateTags(tags, article.getId());
+		
+	}
+	
+	public void editArticle(ArticleModel articleModel, Integer article_id, String userEmail) {
+		Article article=getArticleFromModel(articleModel);
+		article.setCreated_at(new java.sql.Date(articleModel.getCreated_at().getTime())); 
+		article.setUpdated_at(new java.sql.Date(new java.util.Date().getTime()));
+		article.setId(article_id);
+		article =articleDao.save(article);
+		
+		// now updating the tags
+		ArrayList<String> tags =(ArrayList<String>)articleModel.getTags();	
+		tagService.updateTags(tags, article_id);
+		
+	}
+	
+	public Article getArticleFromModel(ArticleModel articleModel) {
+		Article article =new Article();
+		article.setTitle(articleModel.getTitle());
+		article.setText(articleModel.getTitle());
+		article.setStatus(articleModel.getStatus());
+		return article;
+	}
+
+
+	
 }

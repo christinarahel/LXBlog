@@ -35,9 +35,9 @@ public class ArticleModel implements Serializable{
 	public ArticleModel(Article article, List<String> tags) {
 		this.id = article.getId();
 		this.title=article.getTitle();
-		this.title=article.getText();
+		this.text=article.getText();
 		this.status=article.getStatus();
-		this.created_at= new java.util.Date(article.getCreated_at().getTime());
+		this.created_at= new java.util.Date(article.getCreated_at().getTime());// toLocalDate()); to edit this shit
 		if(article.getUpdated_at()!=null) {
 			this.updated_at= new java.util.Date(article.getUpdated_at().getTime());
 		}
