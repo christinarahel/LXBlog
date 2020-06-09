@@ -70,22 +70,6 @@ public class CommentController {
 		}
 	}
 	
-/*	@PostMapping("/articles") 
-	public void createArticle(@RequestBody ArticleModel articleModel) {
-	//	System.out.println("RestArticleControlle   adding new article");
-		Integer user_id = getCurrentUserID();
-    	if(user_id==null) {System.out.println("U are not authorised"); return;}
-		articleService.saveArticleModel(articleModel, user_id);
-	}
-	
-	@PutMapping("/articles/{id}")
-	public void editArticle(@RequestBody ArticleModel articleModel, @PathVariable("id") Integer id) {
-	//	System.out.println("RestArticleControlle   editing existing article");
-		Integer user_id = getCurrentUserID();
-    	if(user_id==null){System.out.println("U are not authorised"); return;}	
-		articleService.editArticle(articleModel, id, user_id);
-	}*/
-
 	public Integer getCurrentUserID() {
 		String token = request.getHeader("Authorization");
 		if(token==null) {return null;}

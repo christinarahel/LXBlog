@@ -28,14 +28,6 @@ public class CommentService {
 		ArrayList<CommentResponse> commentResponses = new ArrayList<>();
 		for (int i = 0; i < comments.size(); i++) {
 			CommentResponse commentResponse = getCommentResponse(comments.get(i));
-//			commentResponse.setId(comments.get(i).getId());
-//			commentResponse.setMessage(comments.get(i).getMessage());
-//			commentResponse.setCreated_at(new java.util.Date(comments.get(i).getCreated_at().getTime())); 
-//			Optional<BlogUser> blogUser = userDao.findById(comments.get(i).getAuthor_id());
-//			if(blogUser.isPresent()) {
-//				commentResponse.setAuthor_first_name(blogUser.get().getFirst_name());
-//				commentResponse.setAuthor_last_name(blogUser.get().getLast_name());}
-
 			commentResponses.add(commentResponse);
 		}
 		return commentResponses;

@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.config.jwt.JwtProvider;
-import com.rahel.lxblog.model.ArticleModel;
 import com.rahel.lxblog.model.ArticleRequest;
+import com.rahel.lxblog.model.ArticleResponse;
 import com.rahel.lxblog.service.ArticleService;
 import com.rahel.lxblog.service.BlogUserService;
 
@@ -38,7 +37,7 @@ public class ArticleController {
 	private HttpServletRequest request;
 	
 	@GetMapping("/articles")
-	public List<ArticleModel> getAllPublicArticles() {	
+	public List<ArticleResponse> getAllPublicArticles() {	
 		return articleService.getAllPublicArticles();
 	}
 	
@@ -66,7 +65,7 @@ public class ArticleController {
 	}
 	
     @GetMapping("/my")
-	public List<ArticleModel> getAllCurrentUserArticles() {
+	public List<ArticleResponse> getAllCurrentUserArticles() {
     	Integer user_id = getCurrentUserID();
     	if(user_id==null) {System.out.println("U are not authorised"); return null;}
     	return articleService.getAllCurrentUserArticles(user_id);

@@ -25,7 +25,6 @@ public class Tag_Article {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 	
 	public Integer getTag_id() {
 		return tag_id;
