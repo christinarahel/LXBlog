@@ -24,4 +24,7 @@ public interface Tag_ArticleDao extends JpaRepository <Tag_Article, Integer>{
 	
 	//List<Tag_Article> 
 	Tag_Article save(Tag_Article ta);
+	
+	List<Tag_Article> findAll();
+
 }

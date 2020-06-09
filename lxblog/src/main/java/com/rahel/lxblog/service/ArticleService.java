@@ -1,7 +1,11 @@
 package com.rahel.lxblog.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import com.rahel.lxblog.dao.UserDao;
 import com.rahel.lxblog.entity.Article;
 import com.rahel.lxblog.entity.BlogUser;
 import com.rahel.lxblog.entity.Status;
+import com.rahel.lxblog.entity.Tag_Article;
 import com.rahel.lxblog.model.ArticleRequest;
 import com.rahel.lxblog.model.ArticleResponse;
 
@@ -42,6 +47,20 @@ public class ArticleService {
 		return getResponsesList(articles);
 	}
 
+	public List<ArticleResponse> getArticlesByTag(List<String> tags) {
+		List<Tag_Article> taPairs = tagService.getTApairsByTag(tags);
+		Set<Integer> articleIds = new HashSet<>();
+		taPairs.forEach(tap->articleIds.add(tap.getArticle_id()));
+		ArrayList<Article> articles = new ArrayList<>();
+		for(Integer i:articleIds){
+		Optional<Article> article =articleDao.findById(i);
+		if(article.isPresent()) {
+			articles.add(article.get());
+		}
+		}
+	    return getResponsesList(articles);
+	}
+	
 	public List<ArticleResponse> getResponsesList(List<Article> articles) {
 		ArrayList<ArticleResponse> articleResponses = new ArrayList<>();
 		for (int i = 0; i < articles.size(); i++) {

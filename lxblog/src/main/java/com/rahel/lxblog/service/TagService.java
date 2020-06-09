@@ -1,6 +1,11 @@
 package com.rahel.lxblog.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,9 +62,6 @@ public class TagService {
 		return tagsIds;
 	}	
 
-//	public void deleteTAPairsByArticles(Integer article_id) {
-		
-//	}
 	
 	public void updateTags(ArrayList<String> tags, Integer article_id) {
 		ArrayList<Integer> tagsIds = addNewTags(tags);
@@ -71,5 +73,27 @@ public class TagService {
 				ta.setTag_id(tagsIds.get(i));
 				taDao.save(ta);
 			}
+	}
+
+	public Map<String, Long> getTagsCloud() {
+		HashMap <String, Long> tagsMap = new HashMap <String, Long>();
+		
+		ArrayList<Tag_Article> tagList = (ArrayList<Tag_Article>) taDao.findAll();
+		Map<Integer, Long> mapOfIds =tagList.stream().collect(Collectors.groupingBy(Tag_Article::getTag_id, Collectors.counting()));
+		mapOfIds.forEach((key, value)->{tagsMap.put(tagDao.findById(key).get().getName(), value);});
+		return tagsMap;
+	}
+
+	public List<Tag_Article> getTApairsByTag(List<String> tagNames) {
+		List<Tag_Article> taList = new ArrayList<>();
+		for(String name : tagNames) {
+		Optional<Tag>tag = tagDao.findByName(name);	
+		if(tag.isPresent()) {
+		//	System.out.println(tag.get().getId() +"  "+name);
+			taList.addAll(taDao.findAllByTag(tag.get().getId()));
+		}
+		
+	    }	
+		return taList;
 	}
 }
