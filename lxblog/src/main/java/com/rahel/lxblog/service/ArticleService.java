@@ -2,6 +2,7 @@ package com.rahel.lxblog.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.rahel.lxblog.entity.BlogUser;
 import com.rahel.lxblog.entity.Status;
 import com.rahel.lxblog.entity.Tag_Article;
 import com.rahel.lxblog.model.ArticleModel;
+import com.rahel.lxblog.model.ArticleRequest;
 
 @Service
 @Transactional
@@ -71,46 +73,47 @@ public class ArticleService {
 		return articleModels;
 	}
 
-	public void saveArticleModel(ArticleModel articleModel, Integer user_id) {
-		Article article=getArticleFromModel(articleModel);
+	public void saveArticle(ArticleRequest articleRequest, Integer user_id) {
+		Article article =new Article();
+		article.updateArticle(articleRequest);
+	//	=getArticleFromModel(articleModel);
 		article.setCreated_at(new java.sql.Date(new java.util.Date().getTime()));  //adding when created
 		article.setAuthor_id(user_id);
 		article =articleDao.save(article);  
 		
 		System.out.println(article + "public void saveArticleModel(ArticleModel articleModel, String userEmail)");
 		
-		ArrayList<String> tags =(ArrayList<String>)articleModel.getTags();	
+		ArrayList<String> tags =(ArrayList<String>)articleRequest.getTags();	
 		tagService.updateTags(tags, article.getId());
 		
 	}
 	
-	public void editArticle(ArticleModel articleModel, Integer article_id, Integer user_id) {
-		Article oldArticle = articleDao.findById(article_id).orElse(null);
-		if(oldArticle==null) {return;}
-		if(oldArticle.getAuthor_id()!=user_id) {
+	public void editArticle(ArticleRequest articleRequest, Integer article_id, Integer user_id) {
+		Article article = articleDao.findById(article_id).orElse(null);
+		if(article==null) {return;}
+		if(article.getAuthor_id()!=user_id) {
 			System.out.println("Only author is allowed to edit the article"); 
 			return;
 			}
-		Article updatedArticle=getArticleFromModel(articleModel);
-		updatedArticle.setCreated_at(new java.sql.Date(articleModel.getCreated_at().getTime())); 
-		updatedArticle.setUpdated_at(new java.sql.Date(new java.util.Date().getTime()));
-		updatedArticle.setId(article_id);
-		updatedArticle.setAuthor_id(oldArticle.getAuthor_id());
-		updatedArticle =articleDao.save(updatedArticle);
-		
+		article.updateArticle(articleRequest);
+		//updatedArticle.setCreated_at(new java.sql.Date(articleRequest.getCreated_at().getTime())); 
+		article.setUpdated_at(new java.sql.Date(new java.util.Date().getTime()));
+	//	updatedArticle.setId(article_id);
+	//	updatedArticle.setAuthor_id(oldArticle.get().getAuthor_id());
+		articleDao.save(article);	
 		// now updating the tags
-		ArrayList<String> tags =(ArrayList<String>)articleModel.getTags();	
+		ArrayList<String> tags =(ArrayList<String>)articleRequest.getTags();	
 		tagService.updateTags(tags, article_id);
 		
 	}
 	
-	public Article getArticleFromModel(ArticleModel articleModel) {
+/*	public Article getArticleFrom(ArticleRequest articleRequest) {
 		Article article =new Article();
-		article.setTitle(articleModel.getTitle());
-		article.setText(articleModel.getTitle());
-		article.setStatus(articleModel.getStatus());
+		article.setTitle(articleRequest.getTitle());
+		article.setText(articleRequest.getTitle());
+		article.setStatus(articleRequest.getStatus());
 		return article;
-	}
+	}*/
 
 	public void deleteArticle(Integer article_id, Integer user_id) {
 		Article article = articleDao.findById(article_id).orElse(null);

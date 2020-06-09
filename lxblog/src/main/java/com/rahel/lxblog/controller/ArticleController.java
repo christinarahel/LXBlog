@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.config.jwt.JwtProvider;
 import com.rahel.lxblog.model.ArticleModel;
+import com.rahel.lxblog.model.ArticleRequest;
 import com.rahel.lxblog.service.ArticleService;
 import com.rahel.lxblog.service.BlogUserService;
 
 
 @RestController
-public class RestArticleController {
+public class ArticleController {
 
 	@Autowired
 	private ArticleService articleService;
@@ -38,24 +39,23 @@ public class RestArticleController {
 	
 	@GetMapping("/articles")
 	public List<ArticleModel> getAllPublicArticles() {	
-		
 		return articleService.getAllPublicArticles();
 	}
 	
 	@PostMapping("/articles") 
-	public void createArticle(@RequestBody ArticleModel articleModel) {
+	public void createArticle(@RequestBody ArticleRequest articleRequest) {
 	//	System.out.println("RestArticleControlle   adding new article");
 		Integer user_id = getCurrentUserID();
     	if(user_id==null) {System.out.println("U are not authorised"); return;}
-		articleService.saveArticleModel(articleModel, user_id);
+		articleService.saveArticle(articleRequest, user_id);
 	}
 	
 	@PutMapping("/articles/{id}")
-	public void editArticle(@RequestBody ArticleModel articleModel, @PathVariable("id") Integer id) {
+	public void editArticle(@RequestBody ArticleRequest articleRequest, @PathVariable("id") Integer id) {
 	//	System.out.println("RestArticleControlle   editing existing article");
 		Integer user_id = getCurrentUserID();
     	if(user_id==null){System.out.println("U are not authorised"); return;}	
-		articleService.editArticle(articleModel, id, user_id);
+		articleService.editArticle(articleRequest, id, user_id);
 	}
 	
 	@DeleteMapping("/articles/{id}")

@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.rahel.lxblog.model.ArticleRequest;
+
 @Entity
 @Table(name="article")
 public class Article implements Serializable { // to add tags after
@@ -91,4 +93,9 @@ public class Article implements Serializable { // to add tags after
 				+ author_id + ", created_at=" + created_at + ", updated_at=" + updated_at + "]";
 	}
 
+	public void updateArticle(ArticleRequest articleRequest) {
+		this.title=articleRequest.getTitle();
+		this.text =articleRequest.getText();
+		this.status=articleRequest.getStatus();
+	}
 }
