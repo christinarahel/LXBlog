@@ -22,7 +22,6 @@ public interface Tag_ArticleDao extends JpaRepository <Tag_Article, Integer>{
 	@Query("DELETE FROM Tag_Article t where article_id=?1") 
 	void deleteAllByArticle(Integer article_id);
 	
-	
 	//List<Tag_Article> 
 	Tag_Article save(Tag_Article ta);
 }

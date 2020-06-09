@@ -12,7 +12,7 @@ import com.rahel.lxblog.entity.Article;
 import com.rahel.lxblog.entity.Tag_Article;
 
 @Repository
-public interface ArticleDao extends JpaRepository<Article, Tag_Article>{
+public interface ArticleDao extends JpaRepository<Article, Tag_Article>{  //must be Integer
 
 	ArrayList<Article> findAllByStatus(String status);
 	

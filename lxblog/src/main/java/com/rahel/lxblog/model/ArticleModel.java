@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.rahel.lxblog.entity.Article;
-import com.rahel.lxblog.entity.Status;
-import com.rahel.lxblog.entity.Tag;
 
 public class ArticleModel implements Serializable{
 
