@@ -24,12 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.httpBasic().disable()
 		.csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().authorizeRequests().antMatchers("/admin/*").hasRole("ADMIN")
-		.antMatchers("/user/*").hasRole("USER")
-		.antMatchers("/register", "/auth").permitAll()
-		.and()
-		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	//	.and().authorizeRequests().antMatchers("/admin/*").hasRole("ADMIN")
+	//	.antMatchers("/user/*").hasRole("USER")
+	//	.antMatchers("/register", "/auth").permitAll()
+	//	.and()
+	//	.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	@Bean

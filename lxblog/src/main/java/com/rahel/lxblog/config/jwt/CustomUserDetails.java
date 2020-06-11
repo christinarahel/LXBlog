@@ -22,10 +22,10 @@ public class CustomUserDetails implements UserDetails{
 		CustomUserDetails c =new CustomUserDetails();
 		c.email=blogUser.getEmail();
 		c.password = blogUser.getPassword();
-		c.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority("USER"));
+		c.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(blogUser.getRole_name()));
 		System.out.println(" CustomUserDetails,  fromUserEntityCustomUserDetails       "+blogUser);
 		System.out.println(c.grantedAuthorities);
-		System.out.println(" hello ");
+	//	System.out.println(" hello ");
 	    return c;
 	}
 	

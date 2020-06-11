@@ -43,7 +43,6 @@ public class ArticleController {
 	
 	@PostMapping("/articles") 
 	public void createArticle(@RequestBody ArticleRequest articleRequest) {
-	//	System.out.println("RestArticleControlle   adding new article");
 		Integer user_id = getCurrentUserID();
     	if(user_id==null) {System.out.println("U are not authorised"); return;}
 		articleService.saveArticle(articleRequest, user_id);
@@ -51,7 +50,6 @@ public class ArticleController {
 	
 	@PutMapping("/articles/{id}")
 	public void editArticle(@RequestBody ArticleRequest articleRequest, @PathVariable("id") Integer id) {
-	//	System.out.println("RestArticleControlle   editing existing article");
 		Integer user_id = getCurrentUserID();
     	if(user_id==null){System.out.println("U are not authorised"); return;}	
 		articleService.editArticle(articleRequest, id, user_id);

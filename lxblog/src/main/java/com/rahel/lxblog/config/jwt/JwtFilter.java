@@ -34,9 +34,10 @@ public class JwtFilter extends GenericFilterBean {
 		logger.info("do filter");
 		System.out.println("ffffiiiilllttttrrrrr");
 		String token = getTokenFromRequest((HttpServletRequest) servletRequest);
+		System.out.println("token = "+  token);
 		if (token!=null && jwtProvider.validateToken(token)) {
 			String userEmail = jwtProvider.getEmailFromToken(token);
-			System.out.println(userEmail);
+			System.out.println("useremail = "+ userEmail);
 			CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
 		    UsernamePasswordAuthenticationToken auth  = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 		    SecurityContextHolder.getContext().setAuthentication(auth);
@@ -45,11 +46,13 @@ public class JwtFilter extends GenericFilterBean {
 	}
 	
 	 public String getTokenFromRequest(HttpServletRequest request) {
-		String bearer = request.getHeader(AUTHORIZATION);
+		//String bearer = 
+			return request.getHeader(AUTHORIZATION);
+	/*	System.out.println("bearer = "+ bearer);
 		if((bearer)!=null&&(bearer.length()>0)&&(bearer.startsWith("Bearer"))) {
 			return bearer.substring(7);
 		}
-		return null;
+		return null;*/
 		
 	}
  

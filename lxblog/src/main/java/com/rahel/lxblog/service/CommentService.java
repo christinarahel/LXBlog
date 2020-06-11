@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rahel.lxblog.dao.CommentDao;
 import com.rahel.lxblog.dao.UserDao;
@@ -15,6 +16,7 @@ import com.rahel.lxblog.model.CommentRequest;
 import com.rahel.lxblog.model.CommentResponse;
 
 @Service
+@Transactional
 public class CommentService {
 	
 	@Autowired

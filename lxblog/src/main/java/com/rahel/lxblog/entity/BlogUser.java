@@ -27,6 +27,18 @@ public class BlogUser {
 	
 	private String role_name="USER";
 	
+	private String activationCode="";
+	
+	private int is_active = 0;
+	
+	public int getIs_active() {
+		return is_active;
+	}
+
+	public void setIs_active(int is_active) {
+		this.is_active = is_active;
+	}
+
 	public BlogUser() {	
 	}
 	
@@ -34,6 +46,7 @@ public class BlogUser {
 		this.first_name=registrationRequest.getFirst_name();
 		this.last_name =registrationRequest.getLast_name();
 	    this.password =registrationRequest.getPassword();
+	    this.is_active=0;
 		this.email=registrationRequest.getEmail();
 		this.created_at =new java.sql.Date(new java.util.Date().getTime());// is it fine to do it in the constuctor????? 				
 	}
@@ -101,5 +114,13 @@ public class BlogUser {
 	public String toString() {
 		return "BlogUser [id=" + id + ", first_name=" + first_name + ", last_name=" + last_name + ", password="
 				+ password + ", email=" + email + ", created_at=" + created_at + ", role_name=" + role_name + "]";
+	}
+
+	public String getActivationCode() {
+		return activationCode;
+	}
+
+	public void setActivationCode(String activationCode) {
+		this.activationCode = activationCode;
 	}
 }
