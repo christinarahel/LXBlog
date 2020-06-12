@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.entity.BlogUser;
+import com.rahel.lxblog.model.EmailForm;
+import com.rahel.lxblog.model.ResetPasswordForm;
 import com.rahel.lxblog.entity.ActivationCode;
 import com.rahel.lxblog.service.BlogUserService;
 //import com.rahel.lxblog.service.UserCodeService;
@@ -67,6 +69,20 @@ public class AuthController {
 		return blogUserService.activateUser(code);
 	//	if(isActivated) {return "user is active now";}
 	//	else return "not activated";
+	}
+	
+	@PostMapping("/auth/forgot_password")
+	public String dropPassword(@RequestBody EmailForm emailForm) {
+		System.out.println(emailForm);
+		System.out.println(emailForm.getEmail());
+		return blogUserService.dropPassword(emailForm.getEmail());
+	//	if(isActivated) {return "user is active now";}
+	//	else return "not activated";
+	}
+	
+	@PostMapping("/auth/reset")
+	public String resetPassword(@RequestBody ResetPasswordForm prForm) {
+		return blogUserService.resetPassword(prForm);
 	}
 	
 	  @GetMapping("/mypage")

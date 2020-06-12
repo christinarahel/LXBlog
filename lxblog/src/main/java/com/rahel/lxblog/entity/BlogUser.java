@@ -27,8 +27,6 @@ public class BlogUser {
 	
 	private String role_name="USER";
 	
-	private String activationCode="";
-	
 	private int is_active = 0;
 	
 	public int getIs_active() {
@@ -116,11 +114,4 @@ public class BlogUser {
 				+ password + ", email=" + email + ", created_at=" + created_at + ", role_name=" + role_name + "]";
 	}
 
-	public String getActivationCode() {
-		return activationCode;
-	}
-
-	public void setActivationCode(String activationCode) {
-		this.activationCode = activationCode;
-	}
 }
