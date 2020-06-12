@@ -1,5 +1,7 @@
 package com.rahel.lxblog.service;
 
+import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rahel.lxblog.controller.RegistrationRequest;
 import com.rahel.lxblog.dao.RoleDao;
 import com.rahel.lxblog.dao.UserDao;
+import com.rahel.lxblog.entity.ActivationCode;
 import com.rahel.lxblog.entity.BlogUser;
 //import com.rahel.lxblog.entity.Role;
 import com.rahel.lxblog.entity.Roles;
@@ -22,8 +25,8 @@ public class BlogUserService{
 	@Autowired
 	private UserDao userDao;
 	
-//	@Autowired
-//	private RoleDao roleDao;
+	@Autowired
+	private ActivationCodeService acService;
 	
 	@Autowired
     private PasswordEncoder passwordEncoder;
@@ -33,55 +36,64 @@ public class BlogUserService{
 	
 	public boolean save(RegistrationRequest registrationRequest) {
      	//saving user to database
+		if (registrationRequest.getEmail()==null) {
+			System.out.println("registrationRequest.getEmail()==null");
+			return false;
+		}
+		if (userDao.findByEmail(registrationRequest.getEmail()).isPresent()){ 
+			System.out.println("userDao.findByEmail(registrationRequest.getEmail()).isPresent");
+			System.out.println(userDao.findByEmail(registrationRequest.getEmail()).get());
+			return false;
+		}
 		BlogUser blogUser = new BlogUser(registrationRequest);		
 		blogUser.setRole_name(Roles.USER.role());  // to change this
 		blogUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-		blogUser.setActivationCode(UUID.randomUUID().toString());
 		blogUser = userDao.save(blogUser);
 		
-		//generating the code and sending to redis
-//		UserRedis userRedis = new UserRedis();
-//		userRedis.setUser_id(blogUser.getId());
-//		userRedis.setActivation_code(UUID.randomUUID().toString());
-		
-		//sending e-mail
-		if (blogUser.getEmail()!=null) {
-			String message = String.format("http://localhost:8080/auth/confirm/%s",blogUser.getActivationCode());
-			mailSender.send(blogUser.getEmail(), "registration confirmation", message);
-		}
+		ActivationCode ac = acService.setActivationCode(blogUser);
+		System.out.println(ac);
+
+		String message = String.format("http://localhost:8080/auth/confirm/%s", ac.getId());
+		mailSender.send(blogUser.getEmail(), "registration confirmation", message);
 		
 		return true;
-	//	return blogUser;
 	}
 	
-	public BlogUser findByEmail(String email) {
+	public Optional<BlogUser> findByEmail(String email) {
 		return userDao.findByEmail(email);
 	}
 	
 	public BlogUser findByEmailAndPassword(String email, String password) {
-		BlogUser blogUser = findByEmail(email);
-		if(blogUser!=null){
-			if(passwordEncoder.matches(password, blogUser.getPassword())) {
-				return blogUser;
+		Optional<BlogUser> blogUser = findByEmail(email);
+		if(blogUser.isPresent()){
+			if(passwordEncoder.matches(password, blogUser.get().getPassword())) {
+				return blogUser.get();
 			}
 		}
 		return null;
 	}
 
-	public boolean activateUser(String code) {
-		BlogUser blogUser = userDao.findByActivationCode(code);
-		System.out.println("user is found by the code =" + blogUser);
-		if(blogUser == null) {
-			return false;
-			} 
-		else {
-			blogUser.setActivationCode(null);  //delete from redis after
-			blogUser.setIs_active(1); 
-			blogUser = userDao.save(blogUser);
-			System.out.println("user after activation =" + blogUser);
-			return true;
+	public String activateUser(String code) {
+		System.out.println(code);
+ //    	Optional<ActivationCode> ac1 = acService.findById(code);
+//		System.out.println(ac1);
+//		Optional<ActivationCode> ac = acService.findByCode(code);
+		Optional<ActivationCode> ac = acService.findById(code);
+		System.out.println(ac);
+		if(ac.isEmpty()) {
+			return "Activation code is not valid";
+			}
+		if(ac.get().getExpirationDate().compareTo(new Date())<0) {
+			return "Activation code is expired";
 		}
-		
+		Optional<BlogUser> blogUser = userDao.findById(ac.get().getUser());
+		if(blogUser.isPresent()) {
+			acService.deleteCode(ac.get());
+			blogUser.get().setIs_active(1); 
+			userDao.save(blogUser.get());
+			return "User account is activated";
+		}
+		return "such user is not exist";
 	}
 
 //	public void getUserIdByEmail(String userEmail) {

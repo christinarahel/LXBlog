@@ -10,8 +10,8 @@ import com.rahel.lxblog.entity.BlogUser;
 @Repository
 public interface UserDao extends JpaRepository<BlogUser, Integer>{
 
-	BlogUser findByEmail(String email);
-	BlogUser findByActivationCode(String code);
+	Optional<BlogUser> findByEmail(String email);
+//	BlogUser findByActivationCode(String code);
 	Optional<BlogUser> findById(Integer id);
     BlogUser save(BlogUser user);	
 }

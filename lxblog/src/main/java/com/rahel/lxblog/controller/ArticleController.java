@@ -1,6 +1,7 @@
 package com.rahel.lxblog.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.config.jwt.JwtProvider;
+import com.rahel.lxblog.entity.BlogUser;
 import com.rahel.lxblog.model.ArticleRequest;
 import com.rahel.lxblog.model.ArticleResponse;
 import com.rahel.lxblog.service.ArticleService;
@@ -74,6 +76,8 @@ public class ArticleController {
 		if(token==null) {return null;}
 		String userEmail = jwtProvider.getEmailFromToken(token);
 		if(userEmail==null) return null;	
-		return userService.findByEmail(userEmail).getId();
+		Optional<BlogUser> blogUser = userService.findByEmail(userEmail);
+		if(blogUser.isPresent()) return blogUser.get().getId();
+		return null;
     }
 }

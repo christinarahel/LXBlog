@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        BlogUser user = blogUserService.findByEmail(username);
+        BlogUser user = blogUserService.findByEmail(username).get();
         
         System.out.println(" CustomUserDetailsService,  loadUserByUsername(String username)       "+user);
 		

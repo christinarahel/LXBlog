@@ -75,6 +75,6 @@ public class CommentController {
 		if(token==null) {return null;}
 		String userEmail = jwtProvider.getEmailFromToken(token);
 		if(userEmail==null) return null;	
-		return userService.findByEmail(userEmail).getId();
+		return userService.findByEmail(userEmail).get().getId();
 	}
 }

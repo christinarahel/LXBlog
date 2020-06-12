@@ -1,5 +1,7 @@
 package com.rahel.lxblog.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +13,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.entity.BlogUser;
+import com.rahel.lxblog.entity.ActivationCode;
 import com.rahel.lxblog.service.BlogUserService;
+//import com.rahel.lxblog.service.UserCodeService;
 import com.rahel.lxblog.config.jwt.JwtProvider;
+import com.rahel.lxblog.dao.ActivationCodeDao;
 
 @RestController
 public class AuthController {
 	
 	@Autowired
 	private BlogUserService blogUserService;
+	
+	@Autowired
+	private ActivationCodeDao ucDao;
+//	private UserCodeService userCodeService;
 	
 	@Autowired
 	private JwtProvider jwtProvider;
@@ -30,8 +39,10 @@ public class AuthController {
     public String registerUser(@RequestBody RegistrationRequest registrationRequest){
 	//	BlogUser blogUser = new BlogUser(registrationRequest);
 	//	System.out.println("Sending email to " + blogUser.getEmail());
-		blogUserService.save(registrationRequest);
-		return "Successfully registered";
+		if(blogUserService.save(registrationRequest)) {
+		return "confirmation e-mail is sent";
+		}
+		else return "user with such e-mail is alredy exist";
 	}
 	
 	@PostMapping("/auth")
@@ -53,15 +64,23 @@ public class AuthController {
 
 	@GetMapping("/auth/confirm/{code}")
 	public String activate(@PathVariable String code) {
-		boolean isActivated = blogUserService.activateUser(code);
-		if(isActivated) {return "redirect:/auth";}
-		else return "not activated";
+		return blogUserService.activateUser(code);
+	//	if(isActivated) {return "user is active now";}
+	//	else return "not activated";
 	}
-/*	  @GetMapping("/mypage")
-	  public String getMyPage(){
-		  String token = request.getHeader("Authorization");
-		  String myemail = jwtProvider.getEmailFromToken(token);
-	      return "hi from my page "+ myemail  ;
+	
+	  @GetMapping("/mypage")
+	  public ActivationCode getMyPage(@RequestBody ActivationCode userCode){
+		  List<ActivationCode> list =(List<ActivationCode>) ucDao.findAll();
+		  for( ActivationCode ac : list) {
+			  System.out.println(ac);
+		  };
+		  System.out.println(list.size());
+	//	  System.out.println(ucDao.findById(userCode.getUser_Id()).get());
+
+	//	  System.out.println(ucDao.findByActivation_code(userCode.getActivation_code()));
+		  
+	      return null;//ucDao.findById(userCode.getUser_Id()).get() ;
 	  }
-	  */
+	  
 }
