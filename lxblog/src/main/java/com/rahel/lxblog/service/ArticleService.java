@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,6 +122,19 @@ public class ArticleService {
 			taDao.deleteAllByArticle(article_id); // now deleting tags_articles pairs
 		} else
 			System.out.println("Any article is to be deleted by its owner only");
+	}
+
+	public List<ArticleResponse> getRequeredPublicArticles(Integer skip, Integer limit, Integer author, String sort,
+			String order) {
+		Pageable pageable;
+		if(order.equals("asc")){
+		pageable = PageRequest.of(skip, limit, Sort.by(sort).ascending());
+		}
+		else {
+		pageable = PageRequest.of(skip, limit, Sort.by(sort).ascending());	
+		}
+		ArrayList<Article> articles = (ArrayList<Article>) articleDao.findAllByAuthor_id(author, Status.DRAFT.name(),pageable);
+		return getResponsesList(articles);
 	}
 
 }
