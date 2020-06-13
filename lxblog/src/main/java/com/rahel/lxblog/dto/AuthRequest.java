@@ -1,4 +1,4 @@
-package com.rahel.lxblog.controller;
+package com.rahel.lxblog.dto;
 
 //import lombok.Data;
 

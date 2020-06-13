@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rahel.lxblog.dto.AuthRequest;
+import com.rahel.lxblog.dto.AuthResponse;
+import com.rahel.lxblog.dto.EmailForm;
+import com.rahel.lxblog.dto.RegistrationRequest;
+import com.rahel.lxblog.dto.ResetPasswordForm;
 import com.rahel.lxblog.entity.BlogUser;
 //import com.rahel.lxblog.jwt.JwtAuthenticationException;
 import com.rahel.lxblog.jwt.JwtProvider;
-import com.rahel.lxblog.model.EmailForm;
-import com.rahel.lxblog.model.ResetPasswordForm;
 //import com.rahel.lxblog.entity.ActivationCode;
 //import com.rahel.lxblog.service.ActivationCodeService;
 import com.rahel.lxblog.service.BlogUserService;

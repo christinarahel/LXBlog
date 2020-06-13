@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rahel.lxblog.dao.ArticleDao;
 import com.rahel.lxblog.dao.Tag_ArticleDao;
 import com.rahel.lxblog.dao.UserDao;
+import com.rahel.lxblog.dto.ArticleRequest;
+import com.rahel.lxblog.dto.ArticleResponse;
 import com.rahel.lxblog.entity.Article;
 import com.rahel.lxblog.entity.BlogUser;
 import com.rahel.lxblog.entity.Status;
 import com.rahel.lxblog.entity.Tag_Article;
-import com.rahel.lxblog.model.ArticleRequest;
-import com.rahel.lxblog.model.ArticleResponse;
 
 @Service
 @Transactional

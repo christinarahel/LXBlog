@@ -1,4 +1,4 @@
-package com.rahel.lxblog.model;
+package com.rahel.lxblog.dto;
 
 import java.util.List;
 

@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rahel.lxblog.dao.CommentDao;
 import com.rahel.lxblog.dao.UserDao;
+import com.rahel.lxblog.dto.CommentRequest;
+import com.rahel.lxblog.dto.CommentResponse;
 import com.rahel.lxblog.entity.BlogUser;
 import com.rahel.lxblog.entity.Comment;
-import com.rahel.lxblog.model.CommentRequest;
-import com.rahel.lxblog.model.CommentResponse;
 
 @Service
 @Transactional

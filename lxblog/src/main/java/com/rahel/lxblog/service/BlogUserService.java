@@ -2,23 +2,20 @@ package com.rahel.lxblog.service;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rahel.lxblog.controller.RegistrationRequest;
-import com.rahel.lxblog.dao.RoleDao;
 import com.rahel.lxblog.dao.UserDao;
+import com.rahel.lxblog.dto.RegistrationRequest;
+import com.rahel.lxblog.dto.ResetPasswordForm;
 import com.rahel.lxblog.entity.ActivationCode;
 import com.rahel.lxblog.entity.BlogUser;
 //import com.rahel.lxblog.entity.Role;
 import com.rahel.lxblog.entity.Roles;
 import com.rahel.lxblog.jwt.JwtAuthenticationException;
-//import com.rahel.lxblog.entity.UserRedis;
-import com.rahel.lxblog.model.ResetPasswordForm;
 
 @Service
 @Transactional

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rahel.lxblog.dto.CommentRequest;
+import com.rahel.lxblog.dto.CommentResponse;
 import com.rahel.lxblog.jwt.JwtProvider;
-import com.rahel.lxblog.model.CommentRequest;
-import com.rahel.lxblog.model.CommentResponse;
 import com.rahel.lxblog.service.BlogUserService;
 import com.rahel.lxblog.service.CommentService;
 

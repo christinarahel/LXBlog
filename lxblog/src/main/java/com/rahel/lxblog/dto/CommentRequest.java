@@ -1,4 +1,4 @@
-package com.rahel.lxblog.model;
+package com.rahel.lxblog.dto;
 
 public class CommentRequest {
 	

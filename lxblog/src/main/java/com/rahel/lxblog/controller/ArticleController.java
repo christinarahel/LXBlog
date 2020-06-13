@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rahel.lxblog.dto.ArticleRequest;
+import com.rahel.lxblog.dto.ArticleResponse;
 import com.rahel.lxblog.entity.BlogUser;
 import com.rahel.lxblog.jwt.JwtProvider;
-import com.rahel.lxblog.model.ArticleRequest;
-import com.rahel.lxblog.model.ArticleResponse;
 import com.rahel.lxblog.service.ArticleService;
 import com.rahel.lxblog.service.BlogUserService;
 
