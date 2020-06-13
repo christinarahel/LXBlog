@@ -40,7 +40,7 @@ public class ArticleService {
 	private Tag_ArticleDao taDao;
 
 	public List<ArticleResponse> getAllPublicArticles() {
-		ArrayList<Article> articles = (ArrayList<Article>) articleDao.findAllByStatus(Status.PUBLIC.status);
+		ArrayList<Article> articles = (ArrayList<Article>) articleDao.findAllByStatus(Status.PUBLIC.statusName);
 		return getResponsesList(articles);
 	}
 
@@ -54,7 +54,7 @@ public class ArticleService {
 		Set<Integer> articleIds = new HashSet<>();
 		taPairs.forEach(tap->articleIds.add(tap.getArticle_id()));
 		ArrayList<Article> articles = new ArrayList<>();
-		for(Integer i:articleIds){
+		for(Integer i: articleIds){
 		Optional<Article> article =articleDao.findById(i);
 		if(article.isPresent()) {
 			articles.add(article.get());
@@ -124,16 +124,16 @@ public class ArticleService {
 			System.out.println("Any article is to be deleted by its owner only");
 	}
 
-	public List<ArticleResponse> getRequeredPublicArticles(Integer skip, Integer limit, Integer author, String sort,
+	public List<ArticleResponse> getRequiredPublicArticles(Integer skip, Integer limit, Integer author, String sort,
 			String order) {
 		Pageable pageable;
 		if(order.equals("asc")){
 		pageable = PageRequest.of(skip, limit, Sort.by(sort).ascending());
 		}
 		else {
-		pageable = PageRequest.of(skip, limit, Sort.by(sort).ascending());	
+		pageable = PageRequest.of(skip, limit, Sort.by(sort).descending());	
 		}
-		ArrayList<Article> articles = (ArrayList<Article>) articleDao.findAllByAuthor_id(author, Status.DRAFT.name(),pageable);
+		ArrayList<Article> articles = (ArrayList<Article>) articleDao.findAllByAuthor_id(author, Status.PUBLIC.name(),pageable);
 		return getResponsesList(articles);
 	}
 

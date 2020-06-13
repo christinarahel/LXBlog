@@ -6,15 +6,14 @@ import javax.persistence.Id;
 
 import org.springframework.data.redis.core.RedisHash;
 
-//@Entity
 @RedisHash("usercode")
 public class ActivationCode {
 
 	@Id
 	private String id;
-	
-	private	Integer user;
-	
+
+	private Integer user;
+
 	private Date expirationDate;
 
 	public Integer getUser() {
@@ -25,7 +24,7 @@ public class ActivationCode {
 		this.user = user;
 	}
 
-    public String getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -45,5 +44,5 @@ public class ActivationCode {
 	public String toString() {
 		return "ActivationCode [id=" + id + ", user=" + user + ", expirationDate=" + expirationDate + "]";
 	}
-	
+
 }

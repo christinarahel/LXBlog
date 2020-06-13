@@ -16,6 +16,7 @@ import com.rahel.lxblog.entity.ActivationCode;
 import com.rahel.lxblog.entity.BlogUser;
 //import com.rahel.lxblog.entity.Role;
 import com.rahel.lxblog.entity.Roles;
+import com.rahel.lxblog.jwt.JwtAuthenticationException;
 //import com.rahel.lxblog.entity.UserRedis;
 import com.rahel.lxblog.model.ResetPasswordForm;
 
@@ -27,40 +28,39 @@ public class BlogUserService {
 	private UserDao userDao;
 
 	@Autowired
-	private ActivationCodeService acService;
-
-	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ActivationCodeService acService;
 
 	@Autowired
 	private MailSender mailSender;
 
-	public boolean save(RegistrationRequest registrationRequest) {
+	public String save(RegistrationRequest registrationRequest) {
 		// saving user to database
-		if (registrationRequest.getEmail() == null) {
-			System.out.println("registrationRequest.getEmail()==null");
-			return false;
+		if ((registrationRequest.getEmail() == null)||(registrationRequest.getPassword() == null)) {
+		//	System.out.println("registrationRequest.getEmail()==null");
+			return "invalid e-mail or password";
 		}
 		if (userDao.findByEmail(registrationRequest.getEmail()).isPresent()) {
-			System.out.println("userDao.findByEmail(registrationRequest.getEmail()).isPresent");
-			System.out.println(userDao.findByEmail(registrationRequest.getEmail()).get());
-			return false;
+		//	System.out.println("userDao.findByEmail(registrationRequest.getEmail()).isPresent");
+		//	System.out.println(userDao.findByEmail(registrationRequest.getEmail()).get());
+			return "user with such e-mail is already exist";
 		}
 		BlogUser blogUser = new BlogUser(registrationRequest);
-		blogUser.setRole_name(Roles.USER.role()); // to change this
+		blogUser.setRole_name(Roles.USER.getName()); 
 		blogUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 		blogUser = userDao.save(blogUser);
 
-//		sendActivationCode(blogUser);
 		ActivationCode ac = acService.setActivationCode(blogUser);
 		System.out.println(ac);
 
 		String message = String.format("http://localhost:8080/auth/confirm/%s", ac.getId());
 		mailSender.send(blogUser.getEmail(), "registration confirmation", message);
 
-		return true;
+		return null;
 	}
-	
+
 	public Optional<BlogUser> findByEmail(String email) {
 		return userDao.findByEmail(email);
 	}
@@ -75,24 +75,24 @@ public class BlogUserService {
 		return null;
 	}
 
-	public String activateUser(String code) {
+	public boolean activateUser(String code) {
 		System.out.println(code);
 		Optional<ActivationCode> ac = acService.findById(code);
 		System.out.println(ac);
 		if (ac.isEmpty()) {
-			return "Activation code is not valid";
+			throw new JwtAuthenticationException("Activation code is not valid");
 		}
 		if (ac.get().getExpirationDate().compareTo(new Date()) < 0) {
-			return "Activation code is expired";
+			throw new JwtAuthenticationException("Activation code is expired");
 		}
 		Optional<BlogUser> blogUser = userDao.findById(ac.get().getUser());
 		if (blogUser.isPresent()) {
 			acService.deleteCode(ac.get());
 			blogUser.get().setIs_active(1);
 			userDao.save(blogUser.get());
-			return "User account is activated";
+			return true;
 		}
-		return "Such user is not exist";
+		return false;
 	}
 
 	public String dropPassword(String email) {
@@ -110,8 +110,8 @@ public class BlogUserService {
 
 	public String resetPassword(ResetPasswordForm prForm) {
 		Optional<ActivationCode> ac = acService.findById(prForm.getActivationCode());
-		if(ac.isEmpty()) {
-			return "Activation code is not valid";			
+		if (ac.isEmpty()) {
+			return "Activation code is not valid";
 		}
 		if (ac.get().getExpirationDate().compareTo(new Date()) < 0) {
 			return "Activation code is expired";
@@ -122,11 +122,10 @@ public class BlogUserService {
 			blogUser.get().setIs_active(1);
 			blogUser.get().setPassword(passwordEncoder.encode(prForm.getNewPassword()));
 			userDao.save(blogUser.get());
-			return "User account is activated";
+//			return "User account is activated";
 		}
 //		return "Such user is not exist";
 		return null;
 	}
 
-	
 }

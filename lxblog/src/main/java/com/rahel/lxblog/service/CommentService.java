@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +21,7 @@ import com.rahel.lxblog.model.CommentResponse;
 @Service
 @Transactional
 public class CommentService {
-	
+
 	@Autowired
 	private CommentDao commentDao;
 
@@ -70,11 +73,30 @@ public class CommentService {
 
 	public void deleteComment(Integer comment_id, Integer user_id) {
 		Optional<Comment> comment = commentDao.findById(comment_id);
-		if(comment.isPresent()){
-			if(comment.get().getAuthor_id()==user_id) {
+		if (comment.isPresent()) {
+			if (comment.get().getAuthor_id() == user_id) {
 				commentDao.deleteById(comment_id);
 			}
 		}
+	}
+
+	public List<CommentResponse> getRequiredComments(Integer article_id, Integer skip, Integer limit, String sort,
+			String order) {
+		Pageable pageable;
+		if (order.equals("asc")) {
+			pageable = PageRequest.of(skip, limit, Sort.by(sort).ascending());
+		} else {
+			pageable = PageRequest.of(skip, limit, Sort.by(sort).descending());
+		}
+
+		ArrayList<Comment> comments = (ArrayList<Comment>) commentDao.findAllByPost_id(article_id, pageable);
+
+		ArrayList<CommentResponse> commentResponses = new ArrayList<>();
+		for (int i = 0; i < comments.size(); i++) {
+			CommentResponse commentResponse = getCommentResponse(comments.get(i));
+			commentResponses.add(commentResponse);
+		}
+		return commentResponses;
 	}
 
 }

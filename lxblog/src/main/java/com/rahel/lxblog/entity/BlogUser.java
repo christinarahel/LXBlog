@@ -25,7 +25,7 @@ public class BlogUser {
 
 	private java.sql.Date created_at;
 	
-	private String role_name="USER";
+	private String role_name;
 	
 	private int is_active = 0;
 	
@@ -51,7 +51,7 @@ public class BlogUser {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")   // not necessary if the name is matching to the column name
+	@Column(name = "id")  
 	public Integer getId() {
 		return id;
 	}

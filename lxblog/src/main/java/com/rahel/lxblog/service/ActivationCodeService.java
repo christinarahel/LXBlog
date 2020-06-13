@@ -2,6 +2,7 @@ package com.rahel.lxblog.service;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,12 +50,11 @@ public class ActivationCodeService {
 	public Optional<ActivationCode> findById(String code) {
 		return acDao.findById(code);
 	}
-	
-	//private static final String TABLE_NAME = "usercode";
-	
-	//private RedisTemplate<String, Object> redisTemplate;
-	
-	//private HashOperations<String, Integer, UserCode> hashOperations;
 
+/*	public List<ActivationCode> findAll() {
+		
+		return acDao.findAll();
+	}*/
+	
 
 }

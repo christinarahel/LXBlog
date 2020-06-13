@@ -1,15 +1,15 @@
 package com.rahel.lxblog.entity;
 
 public enum Roles {
-	ADMIN("ADMIN"), USER("USER"), ANONIMOUS("ANONIMOUS");
+	ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), ANONIMOUS("ROLE_ANONIMOUS");
 
-	private String role;
+	private String name;
 
-	Roles(String role) {
-		this.role = role;
+	Roles(String name) {
+		this.name = name;
 	}
 
-	public String role() {
-		return role;
+	public String getName() {
+		return name;
 	}
 }

@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="comment")
-public class Comment implements Serializable{
+@Table(name = "comment")
+public class Comment implements Serializable {
 
 	private int id;
 
@@ -63,6 +63,5 @@ public class Comment implements Serializable{
 	public void setCreated_at(java.sql.Date created_at) {
 		this.created_at = created_at;
 	}
-
 
 }

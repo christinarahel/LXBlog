@@ -1,10 +1,14 @@
 package com.rahel.lxblog.controller;
 
-import java.util.List;
+//import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,13 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.entity.BlogUser;
+//import com.rahel.lxblog.jwt.JwtAuthenticationException;
+import com.rahel.lxblog.jwt.JwtProvider;
 import com.rahel.lxblog.model.EmailForm;
 import com.rahel.lxblog.model.ResetPasswordForm;
-import com.rahel.lxblog.entity.ActivationCode;
+//import com.rahel.lxblog.entity.ActivationCode;
+//import com.rahel.lxblog.service.ActivationCodeService;
 import com.rahel.lxblog.service.BlogUserService;
-//import com.rahel.lxblog.service.UserCodeService;
-import com.rahel.lxblog.config.jwt.JwtProvider;
-import com.rahel.lxblog.dao.ActivationCodeDao;
+import com.sun.mail.iap.Response;
+//import com.rahel.lxblog.dao.ActivationCodeDao;
 
 @RestController
 public class AuthController {
@@ -27,9 +33,8 @@ public class AuthController {
 	@Autowired
 	private BlogUserService blogUserService;
 	
-	@Autowired
-	private ActivationCodeDao ucDao;
-//	private UserCodeService userCodeService;
+//	@Autowired
+//	private ActivationCodeService acService;   //where is my service?
 	
 	@Autowired
 	private JwtProvider jwtProvider;
@@ -38,44 +43,51 @@ public class AuthController {
 	private HttpServletRequest request;
 	
 	@PostMapping("/register")
-    public String registerUser(@RequestBody RegistrationRequest registrationRequest){
+    public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest registrationRequest){
 	//	BlogUser blogUser = new BlogUser(registrationRequest);
 	//	System.out.println("Sending email to " + blogUser.getEmail());
-		if(blogUserService.save(registrationRequest)) {
-		return "confirmation e-mail is sent";
+		String exceptionMsg = blogUserService.save(registrationRequest);
+		if(exceptionMsg!=null) {
+			throw new BadCredentialsException(exceptionMsg);
 		}
-		else return "user with such e-mail is alredy exist";
+		return ResponseEntity.ok().body("confirmation e-mail is sent") ;
 	}
 	
 	@PostMapping("/auth")
 	public @ResponseBody AuthResponse auth(@RequestBody AuthRequest authRequest) {
+	//	try {
 		BlogUser user =blogUserService.findByEmailAndPassword(authRequest.getEmail(),authRequest.getPassword());
 		if (user==null) {
-			//return new AuthResponse(""); what shall I do here?????????????? 
-			System.out.println("user is not found");
-			return null;
-		}
+			throw new UsernameNotFoundException("user is not found");
+		}	
 		if (user.getIs_active()==0) {
 			//return new AuthResponse(""); what shall I do here?????????????? 
-			System.out.println("user is not activated");
-			return null;
+			throw new BadCredentialsException("user is not activated");
 		}
-	    String token = jwtProvider.generateToken(user.getEmail());
+	    String token = jwtProvider.generateToken(user.getEmail(), user.getId());
 	    return new AuthResponse(token);
+//	}
+//		catch (AuthenticationException e) {
+			//throw new BadCredentialsException("Invalid username or password");
+	//		System.out.println("Invalid username or password");
+		//	return null;
+	//	}
 	}
 
 	@GetMapping("/auth/confirm/{code}")
-	public String activate(@PathVariable String code) {
-		return blogUserService.activateUser(code);
-	//	if(isActivated) {return "user is active now";}
-	//	else return "not activated";
+	public ResponseEntity<String> activate(@PathVariable String code) {
+		if(blogUserService.activateUser(code)) {
+			return ResponseEntity.ok().body("Your account is active now");
+		}
+		else return null;
 	}
 	
 	@PostMapping("/auth/forgot_password")
-	public String dropPassword(@RequestBody EmailForm emailForm) {
-		System.out.println(emailForm);
-		System.out.println(emailForm.getEmail());
-		return blogUserService.dropPassword(emailForm.getEmail());
+	public ResponseEntity<String> dropPassword(@RequestBody EmailForm emailForm) {
+	//	System.out.println(emailForm);
+	//	System.out.println(emailForm.getEmail());
+	String message =blogUserService.dropPassword(emailForm.getEmail());
+	return ResponseEntity.ok().body(message) ;
 	//	if(isActivated) {return "user is active now";}
 	//	else return "not activated";
 	}
@@ -85,9 +97,9 @@ public class AuthController {
 		return blogUserService.resetPassword(prForm);
 	}
 	
-	  @GetMapping("/mypage")
+/*	  @GetMapping("/mypage")
 	  public ActivationCode getMyPage(@RequestBody ActivationCode userCode){
-		  List<ActivationCode> list =(List<ActivationCode>) ucDao.findAll();
+		  List<ActivationCode> list =(List<ActivationCode>) acService.findAll();
 		  for( ActivationCode ac : list) {
 			  System.out.println(ac);
 		  };
@@ -97,6 +109,6 @@ public class AuthController {
 	//	  System.out.println(ucDao.findByActivation_code(userCode.getActivation_code()));
 		  
 	      return null;//ucDao.findById(userCode.getUser_Id()).get() ;
-	  }
+	  }*/
 	  
 }

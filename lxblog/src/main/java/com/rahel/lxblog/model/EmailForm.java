@@ -10,5 +10,4 @@ public class EmailForm {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 }

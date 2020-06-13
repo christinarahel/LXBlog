@@ -8,25 +8,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rahel.lxblog.entity.BlogUser;
-import com.rahel.lxblog.config.jwt.CustomUserDetails;
-
+import com.rahel.lxblog.jwt.JwtUserDetails;
 
 @Component
 @Transactional
-public class CustomUserDetailsService implements UserDetailsService {
+public class JwtUserDetailsService implements UserDetailsService {
 
 	@Autowired
-    private BlogUserService blogUserService;
-	
+	private BlogUserService blogUserService;
+
 	@Override
-	public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        BlogUser user = blogUserService.findByEmail(username).get();
-        
-        System.out.println(" CustomUserDetailsService,  loadUserByUsername(String username)       "+user);
-		
-		return CustomUserDetails.fromUserEntityCustomUserDetails(user);
-		
+	public JwtUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		BlogUser user = blogUserService.findByEmail(userName).get();
+		if(user == null) {
+			throw new UsernameNotFoundException("User with e-mail:" + userName+" is not found");
+		}
+		return JwtUserDetails.fromUserEntityToJwtUserDetails(user);
 	}
 
-	
 }
