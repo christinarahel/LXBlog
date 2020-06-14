@@ -95,7 +95,6 @@ public class BlogUserService {
 		blogUser.get().setIs_active(0);
 		String code = UUID.randomUUID().toString();
 		ActivationCode ac = acService.setActivationCode(blogUser.get(), code);
-		System.out.println(ac);
 		String message = String.format("password reset code is %s", ac.getId());
 		try {
 			mailSender.send(blogUser.get().getEmail(), "password reset", message);

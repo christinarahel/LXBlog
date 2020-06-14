@@ -29,14 +29,6 @@ public class BlogUser {
 
 	private int is_active = 0;
 
-	public int getIs_active() {
-		return is_active;
-	}
-
-	public void setIs_active(int is_active) {
-		this.is_active = is_active;
-	}
-
 	public BlogUser() {
 	}
 
@@ -106,6 +98,14 @@ public class BlogUser {
 
 	public void setRole_name(String role_name) {
 		this.role_name = role_name;
+	}
+	
+	public int getIs_active() {
+		return is_active;
+	}
+
+	public void setIs_active(int is_active) {
+		this.is_active = is_active;
 	}
 
 	@Override
