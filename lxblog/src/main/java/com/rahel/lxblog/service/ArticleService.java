@@ -92,36 +92,36 @@ public class ArticleService {
 
 	}
 
-	public void editArticle(ArticleRequest articleRequest, Integer article_id, Integer user_id) {
+	public String editArticle(ArticleRequest articleRequest, Integer article_id, Integer user_id) {
 		Article article = articleDao.findById(article_id).orElse(null);
 		if (article == null) {
-			return;
+			return "Such article does not exist";
 		}
 		if (article.getAuthor_id() != user_id) {
-			System.out.println("Only author is allowed to edit the article");
-			return;
+			return "Only author is allowed to edit the article";
 		}
 		article.updateArticle(articleRequest);
 		article.setUpdated_at(new java.sql.Date(new java.util.Date().getTime()));
 		articleDao.save(article);
+		
 		// now updating the tags
 		ArrayList<String> tags = (ArrayList<String>) articleRequest.getTags();
 		tagService.updateTags(tags, article_id);
-
+		return null;
 	}
 
-	public void deleteArticle(Integer article_id, Integer user_id) {
+	public String deleteArticle(Integer article_id, Integer user_id) {
 		Article article = articleDao.findById(article_id).orElse(null);
 		if (article == null) {
-			return;
+			return "Such Article does not exist";
 		}
 		Integer autor_id = article.getAuthor_id();
 		if (user_id == autor_id) {
 			articleDao.deleteById(article_id);
-
-			taDao.deleteAllByArticle(article_id); // now deleting tags_articles pairs
+			taDao.deleteAllByArticle(article_id); // deleting tags_articles pairs
+			return null;
 		} else
-			System.out.println("Any article is to be deleted by its owner only");
+			return("An article can be deleted by its owner only");
 	}
 
 	public List<ArticleResponse> getRequiredPublicArticles(Integer skip, Integer limit, Integer author, String sort,

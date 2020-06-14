@@ -10,10 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.rahel.lxblog.entity.Article;
-import com.rahel.lxblog.entity.Tag_Article;
 
 @Repository
-public interface ArticleDao extends JpaRepository<Article, Tag_Article> { // must be Integer
+public interface ArticleDao extends JpaRepository<Article, Integer> {
 
 	@Modifying
 	Article save(Article article);
@@ -21,7 +20,7 @@ public interface ArticleDao extends JpaRepository<Article, Tag_Article> { // mus
 	Optional<Article> findById(Integer article_id);
 
 	@Modifying
-	Integer deleteById(Integer id); // Shall I add annotation?
+	void deleteById(Integer id);
 
 	@Query("SELECT a FROM Article a WHERE author_id=?1")
 	List<Article> findAllByAuthor_id(Integer author_id);

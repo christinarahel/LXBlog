@@ -2,7 +2,7 @@ package com.rahel.lxblog.dto;
 
 public class CommentResponse {
 
-	private int id;  //???????????
+	private int id;
 
 	private String message;
 	

@@ -55,7 +55,6 @@ public class CommentService {
 		} else {
 			return getCommentResponse(comment.get());
 		}
-
 	}
 
 	private CommentResponse getCommentResponse(Comment comment) {
@@ -71,13 +70,16 @@ public class CommentService {
 		return commentResponse;
 	}
 
-	public void deleteComment(Integer comment_id, Integer user_id) {
+	public String deleteComment(Integer comment_id, Integer user_id) {
 		Optional<Comment> comment = commentDao.findById(comment_id);
 		if (comment.isPresent()) {
 			if (comment.get().getAuthor_id() == user_id) {
 				commentDao.deleteById(comment_id);
-			}
-		}
+				return null;
+			} else
+				return "A comment can be deleted by its author only";
+		} else
+			return "Such comment does not exist";
 	}
 
 	public List<CommentResponse> getRequiredComments(Integer article_id, Integer skip, Integer limit, String sort,

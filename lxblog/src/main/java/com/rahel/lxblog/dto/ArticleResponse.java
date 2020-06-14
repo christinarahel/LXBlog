@@ -6,25 +6,25 @@ import java.util.List;
 import com.rahel.lxblog.entity.Article;
 
 public class ArticleResponse {
-	
+
 	private Integer id;
 
 	private String title;
 
-	private String text; 
+	private String text;
 
 	private String status;
 
 	private String author_first_name;
-	
+
 	private String author_last_name;
 
-	private Date created_at; 
+	private Date created_at;
 
-	private Date updated_at=null;
-	
+	private Date updated_at = null;
+
 	private List<String> tags;
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -96,15 +96,15 @@ public class ArticleResponse {
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
-	
+
 	public void getFromArticle(Article article) {
 		this.id = article.getId();
-		this.title=article.getTitle();
-		this.text=article.getText();
-		this.status=article.getStatus();
-		this.created_at= new java.util.Date(article.getCreated_at().getTime());// toLocalDate()); to edit this shit
-		if(article.getUpdated_at()!=null) {
-			this.updated_at= new java.util.Date(article.getUpdated_at().getTime());
+		this.title = article.getTitle();
+		this.text = article.getText();
+		this.status = article.getStatus();
+		this.created_at = new java.util.Date(article.getCreated_at().getTime());
+		if (article.getUpdated_at() != null) {
+			this.updated_at = new java.util.Date(article.getUpdated_at().getTime());
 		}
 	}
 }

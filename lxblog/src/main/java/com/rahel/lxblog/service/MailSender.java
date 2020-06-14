@@ -2,6 +2,7 @@ package com.rahel.lxblog.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,17 +12,17 @@ public class MailSender {
 
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	@Value("${spring.mail.username}")
 	private String username;
-	
-	public void send(String emailTo, String subject, String message) {
+
+	public void send(String emailTo, String subject, String message) throws MailSendException {
 		SimpleMailMessage smm = new SimpleMailMessage();
-		smm.setFrom(username); // to exchange is after
+		smm.setFrom(username);
 		smm.setTo(emailTo);
 		smm.setSubject(subject);
 		smm.setText(message);
 		javaMailSender.send(smm);
 	}
-	
+
 }

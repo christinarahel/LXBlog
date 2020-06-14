@@ -1,8 +1,8 @@
 package com.rahel.lxblog.dto;
 
 public class ResetPasswordForm {
- String activationCode;
- String newPassword;
+ private String activationCode;
+ private String newPassword;
  
 public String getActivationCode() {
 	return activationCode;

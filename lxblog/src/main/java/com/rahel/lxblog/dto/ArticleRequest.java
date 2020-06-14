@@ -13,7 +13,6 @@ public class ArticleRequest {
 	private List<String> tags;
 
 	public ArticleRequest() {
-
 	}
 
 	public String getTitle() {

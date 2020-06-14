@@ -2,8 +2,10 @@ package com.rahel.lxblog.service;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +15,7 @@ import com.rahel.lxblog.dto.RegistrationRequest;
 import com.rahel.lxblog.dto.ResetPasswordForm;
 import com.rahel.lxblog.entity.ActivationCode;
 import com.rahel.lxblog.entity.BlogUser;
-//import com.rahel.lxblog.entity.Role;
 import com.rahel.lxblog.entity.Roles;
-import com.rahel.lxblog.jwt.JwtAuthenticationException;
 
 @Service
 @Transactional
@@ -26,7 +26,7 @@ public class BlogUserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private ActivationCodeService acService;
 
@@ -34,27 +34,24 @@ public class BlogUserService {
 	private MailSender mailSender;
 
 	public String save(RegistrationRequest registrationRequest) {
-		// saving user to database
-		if ((registrationRequest.getEmail() == null)||(registrationRequest.getPassword() == null)) {
-		//	System.out.println("registrationRequest.getEmail()==null");
+		if ((registrationRequest.getEmail().isEmpty()) || (registrationRequest.getPassword().isEmpty())) {
 			return "invalid e-mail or password";
 		}
 		if (userDao.findByEmail(registrationRequest.getEmail()).isPresent()) {
-		//	System.out.println("userDao.findByEmail(registrationRequest.getEmail()).isPresent");
-		//	System.out.println(userDao.findByEmail(registrationRequest.getEmail()).get());
 			return "user with such e-mail is already exist";
 		}
+		String code = UUID.randomUUID().toString();
+		String message = String.format("http://localhost:8080/auth/confirm/%s", code);
+		try {
+			mailSender.send(registrationRequest.getEmail(), "registration confirmation", message);
+		} catch (MailSendException e) {
+			return "Invalid e-mail";
+		}
 		BlogUser blogUser = new BlogUser(registrationRequest);
-		blogUser.setRole_name(Roles.USER.getName()); 
+		blogUser.setRole_name(Roles.USER.getName());
 		blogUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 		blogUser = userDao.save(blogUser);
-
-		ActivationCode ac = acService.setActivationCode(blogUser);
-		System.out.println(ac);
-
-		String message = String.format("http://localhost:8080/auth/confirm/%s", ac.getId());
-		mailSender.send(blogUser.getEmail(), "registration confirmation", message);
-
+        acService.setActivationCode(blogUser, code);       
 		return null;
 	}
 
@@ -72,24 +69,22 @@ public class BlogUserService {
 		return null;
 	}
 
-	public boolean activateUser(String code) {
-		System.out.println(code);
+	public String activateUser(String code) {
 		Optional<ActivationCode> ac = acService.findById(code);
-		System.out.println(ac);
 		if (ac.isEmpty()) {
-			throw new JwtAuthenticationException("Activation code is not valid");
+			return "Activation code is not valid";
 		}
 		if (ac.get().getExpirationDate().compareTo(new Date()) < 0) {
-			throw new JwtAuthenticationException("Activation code is expired");
+			return "Activation code is expired";
 		}
 		Optional<BlogUser> blogUser = userDao.findById(ac.get().getUser());
 		if (blogUser.isPresent()) {
 			acService.deleteCode(ac.get());
 			blogUser.get().setIs_active(1);
 			userDao.save(blogUser.get());
-			return true;
+			return null;
 		}
-		return false;
+		return "No such user";
 	}
 
 	public String dropPassword(String email) {
@@ -98,11 +93,16 @@ public class BlogUserService {
 			return "No user with such e-mail";
 		}
 		blogUser.get().setIs_active(0);
-		ActivationCode ac = acService.setActivationCode(blogUser.get());
+		String code = UUID.randomUUID().toString();
+		ActivationCode ac = acService.setActivationCode(blogUser.get(), code);
 		System.out.println(ac);
 		String message = String.format("password reset code is %s", ac.getId());
-		mailSender.send(blogUser.get().getEmail(), "password reset", message);
-		return "e-mail with password reset code was sent";
+		try {
+			mailSender.send(blogUser.get().getEmail(), "password reset", message);
+		} catch (MailSendException e) {
+			return "Invalid e-mail";
+		}
+		return null;
 	}
 
 	public String resetPassword(ResetPasswordForm prForm) {
@@ -119,9 +119,7 @@ public class BlogUserService {
 			blogUser.get().setIs_active(1);
 			blogUser.get().setPassword(passwordEncoder.encode(prForm.getNewPassword()));
 			userDao.save(blogUser.get());
-//			return "User account is activated";
 		}
-//		return "Such user is not exist";
 		return null;
 	}
 

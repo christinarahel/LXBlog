@@ -22,13 +22,13 @@ public class JwtProvider {
 	public String generateToken(String email, Integer id) {
 		java.util.Date date = java.util.Date
 				.from(LocalDate.now().plusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant());
-		Claims claims = Jwts.claims().setSubject(email); // added extra
-		claims.put("id", id); // added extra
+		Claims claims = Jwts.claims().setSubject(email); 
+		claims.put("id", id);
 		return Jwts.builder().setClaims(claims).setExpiration(date).signWith(SignatureAlgorithm.HS512, jwtSecret)
 				.compact();
 	}
 
-	public boolean validateToken(String token) { // I need to check all the exceptions
+	public boolean validateToken(String token) { 
 		try {
 			Jws<Claims> claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
 			if (claims.getBody().getExpiration().before(new Date())) {

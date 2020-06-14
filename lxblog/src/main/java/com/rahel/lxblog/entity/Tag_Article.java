@@ -7,15 +7,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="TAPair")
+@Table(name = "TAPair")
 public class Tag_Article {
-	
+
 	private Integer id;
 
 	private Integer tag_id;
-	
+
 	private Integer article_id;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
@@ -25,7 +25,7 @@ public class Tag_Article {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	public Integer getTag_id() {
 		return tag_id;
 	}
@@ -33,7 +33,7 @@ public class Tag_Article {
 	public void setTag_id(Integer tag_id) {
 		this.tag_id = tag_id;
 	}
-    
+
 	public Integer getArticle_id() {
 		return article_id;
 	}
@@ -41,5 +41,5 @@ public class Tag_Article {
 	public void setArticle_id(Integer article_id) {
 		this.article_id = article_id;
 	}
-	
+
 }

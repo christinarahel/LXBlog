@@ -10,16 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.rahel.lxblog.entity.BlogUser;
 
-//import io.jsonwebtoken.lang.Collections;
+public class JwtUserDetails implements UserDetails {
 
-public class JwtUserDetails implements UserDetails{
- // to customize after ))))
-	
 	private final Integer id;
 	private final String email;
 	private final String password;
 	private Collection<? extends GrantedAuthority> grantedAuthorities;
-	
+
 	public JwtUserDetails(Integer id, String email, String password,
 			Collection<? extends GrantedAuthority> grantedAuthorities) {
 		super();
@@ -30,20 +27,13 @@ public class JwtUserDetails implements UserDetails{
 	}
 
 	public static JwtUserDetails fromUserEntityToJwtUserDetails(BlogUser blogUser) {
-		List<SimpleGrantedAuthority> grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(blogUser.getRole_name()));
-		JwtUserDetails userDetails =new JwtUserDetails(blogUser.getId(), blogUser.getEmail(), blogUser.getPassword(), grantedAuthorities);
-		
-	//	c.email=blogUser.getEmail();
-	//	c.password = blogUser.getPassword();
-		
-	//	c.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(blogUser.getRole_name()));
-	//	System.out.println(" CustomUserDetails,  fromUserEntityCustomUserDetails       "+blogUser);
-	//	System.out.println(c.grantedAuthorities);
-	//	System.out.println(" hello ");
-	    return userDetails;
+		List<SimpleGrantedAuthority> grantedAuthorities = Collections
+				.singletonList(new SimpleGrantedAuthority(blogUser.getRole_name()));
+		JwtUserDetails userDetails = new JwtUserDetails(blogUser.getId(), blogUser.getEmail(), blogUser.getPassword(),
+				grantedAuthorities);
+		return userDetails;
 	}
-	
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return grantedAuthorities;
@@ -82,6 +72,5 @@ public class JwtUserDetails implements UserDetails{
 	public Integer getId() {
 		return id;
 	}
-	
 
 }

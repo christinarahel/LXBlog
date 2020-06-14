@@ -14,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.rahel.lxblog.service.JwtUserDetailsService;
-
 @Component
 //@Log
 public class JwtFilter extends GenericFilterBean {

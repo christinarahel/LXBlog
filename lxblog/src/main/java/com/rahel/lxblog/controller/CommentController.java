@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,12 +45,7 @@ public class CommentController {
 	@PostMapping("/articles/{id}/comments")
 	public void createComment(@RequestBody CommentRequest commentRequest, @PathVariable Integer id) {
 		Integer user_id = getCurrentUserID();
-		if (user_id == null) {
-			System.out.println("You are not authorised");
-			return;
-		}
 		commentService.saveComment(commentRequest, id, user_id);
-
 	}
 
 	@GetMapping("/articles/{id}/comments/{comment_id}")
@@ -58,13 +54,13 @@ public class CommentController {
 	}
 
 	@DeleteMapping("/articles/{id}/comments/{comment_id}")
-	public void deleteComment(@PathVariable Integer id, @PathVariable Integer comment_id) {
+	public ResponseEntity<String> deleteComment(@PathVariable Integer id, @PathVariable Integer comment_id) {
 		Integer user_id = getCurrentUserID();
-		if (user_id == null) {
-			System.out.println("You are not authorised");
-			return;
+		String response = commentService.deleteComment(comment_id, user_id);
+		if (response == null) {
+			return ResponseEntity.ok().body("The comment is deleted");
 		} else {
-			commentService.deleteComment(comment_id, user_id);
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 
@@ -75,9 +71,6 @@ public class CommentController {
 		Integer limit = Integer.valueOf(requestParams.get("limit"));
 		String sort = requestParams.get("sort");
 		String order = requestParams.get("order");
-
-		System.out.println(id + " " + skip + " " + limit + "  " + sort + "  " + order);
-
 		return commentService.getRequiredComments(id, skip, limit, sort, order);
 	}
 

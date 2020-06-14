@@ -1,6 +1,5 @@
 package com.rahel.lxblog.entity;
 
-import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Entity;
@@ -12,23 +11,23 @@ import javax.persistence.Table;
 import com.rahel.lxblog.dto.ArticleRequest;
 
 @Entity
-@Table(name="article")
-public class Article implements Serializable { // to add tags after
+@Table(name = "article")
+public class Article {
 
 	private Integer id;
 
 	private String title;
 
-	private String text; 
+	private String text;
 
 	private String status;
 
 	private int author_id;
 
-	private Date created_at; 
+	private Date created_at;
 
-	private Date updated_at; 
-	
+	private Date updated_at;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
@@ -94,8 +93,8 @@ public class Article implements Serializable { // to add tags after
 	}
 
 	public void updateArticle(ArticleRequest articleRequest) {
-		this.title=articleRequest.getTitle();
-		this.text =articleRequest.getText();
-		this.status=articleRequest.getStatus();
+		this.title = articleRequest.getTitle();
+		this.text = articleRequest.getText();
+		this.status = articleRequest.getStatus();
 	}
 }

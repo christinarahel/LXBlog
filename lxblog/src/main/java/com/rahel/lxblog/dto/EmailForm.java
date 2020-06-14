@@ -1,7 +1,7 @@
 package com.rahel.lxblog.dto;
 
 public class EmailForm {
-	String email;
+	private String email;
 
 	public String getEmail() {
 		return email;

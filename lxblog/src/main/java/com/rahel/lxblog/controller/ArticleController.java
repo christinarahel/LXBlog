@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rahel.lxblog.dto.ArticleRequest;
@@ -47,11 +47,9 @@ public class ArticleController {
 	@PostMapping("/articles")
 	public void createArticle(@RequestBody ArticleRequest articleRequest) {
 		Integer user_id = getCurrentUserID();
-		if (user_id == null) {
-			System.out.println("U are not authorised");
-			return;
+		if (user_id != null) {
+			articleService.saveArticle(articleRequest, user_id);
 		}
-		articleService.saveArticle(articleRequest, user_id);
 	}
 
 	@GetMapping(value = "/articles", params = { "skip", "limit", "author", "sort", "order" })
@@ -61,39 +59,35 @@ public class ArticleController {
 		Integer author = Integer.valueOf(requestParams.get("author"));
 		String sort = requestParams.get("sort");
 		String order = requestParams.get("order");
-
-		// System.out.println(skip +" " + limit +" "+ author +" " + sort+ " "+ order);
-
 		return articleService.getRequiredPublicArticles(skip, limit, author, sort, order);
 	}
 
 	@PutMapping("/articles/{id}")
-	public void editArticle(@RequestBody ArticleRequest articleRequest, @PathVariable("id") Integer id) {
+	public ResponseEntity<String> editArticle(@RequestBody ArticleRequest articleRequest,
+			@PathVariable("id") Integer id) {
 		Integer user_id = getCurrentUserID();
-		if (user_id == null) {
-			System.out.println("U are not authorised");
-			return;
+		String response = articleService.editArticle(articleRequest, id, user_id);
+		if (response == null) {
+			return ResponseEntity.ok().body("The article is updated");
+		} else {
+			return ResponseEntity.badRequest().body(response);
 		}
-		articleService.editArticle(articleRequest, id, user_id);
 	}
 
 	@DeleteMapping("/articles/{id}")
-	public @ResponseBody void deleteArticle(@PathVariable("id") Integer id) {
+	public ResponseEntity<String> deleteArticle(@PathVariable("id") Integer id) {
 		Integer user_id = getCurrentUserID();
-		if (user_id == null) {
-			System.out.println("U are not authorised");
-			return;
+		String response = articleService.deleteArticle(id, user_id);
+		if (response == null) {
+			return ResponseEntity.ok().body("The article is deleted");
+		} else {
+			return ResponseEntity.badRequest().body(response);
 		}
-		articleService.deleteArticle(id, user_id);
 	}
 
 	@GetMapping("/my")
 	public List<ArticleResponse> getAllCurrentUserArticles() {
 		Integer user_id = getCurrentUserID();
-		if (user_id == null) {
-			System.out.println("U are not authorised");
-			return null;
-		}
 		return articleService.getAllCurrentUserArticles(user_id);
 	}
 

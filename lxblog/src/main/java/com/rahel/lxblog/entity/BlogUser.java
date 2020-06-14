@@ -10,12 +10,12 @@ import javax.persistence.Table;
 import com.rahel.lxblog.dto.RegistrationRequest;
 
 @Entity
-@Table(name="bloguser")
+@Table(name = "bloguser")
 public class BlogUser {
 
-	private	Integer id;
+	private Integer id;
 
-	private	String first_name;
+	private String first_name;
 
 	private String last_name;
 
@@ -24,11 +24,11 @@ public class BlogUser {
 	private String email;
 
 	private java.sql.Date created_at;
-	
+
 	private String role_name;
-	
+
 	private int is_active = 0;
-	
+
 	public int getIs_active() {
 		return is_active;
 	}
@@ -37,21 +37,21 @@ public class BlogUser {
 		this.is_active = is_active;
 	}
 
-	public BlogUser() {	
+	public BlogUser() {
 	}
-	
-     public BlogUser(RegistrationRequest registrationRequest) {
-		this.first_name=registrationRequest.getFirst_name();
-		this.last_name =registrationRequest.getLast_name();
-	    this.password =registrationRequest.getPassword();
-	    this.is_active=0;
-		this.email=registrationRequest.getEmail();
-		this.created_at =new java.sql.Date(new java.util.Date().getTime());// is it fine to do it in the constuctor????? 				
+
+	public BlogUser(RegistrationRequest registrationRequest) {
+		this.first_name = registrationRequest.getFirst_name();
+		this.last_name = registrationRequest.getLast_name();
+		this.password = registrationRequest.getPassword();
+		this.is_active = 0;
+		this.email = registrationRequest.getEmail();
+		this.created_at = new java.sql.Date(new java.util.Date().getTime());
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")  
+	@Column(name = "id")
 	public Integer getId() {
 		return id;
 	}
@@ -107,7 +107,7 @@ public class BlogUser {
 	public void setRole_name(String role_name) {
 		this.role_name = role_name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "BlogUser [id=" + id + ", first_name=" + first_name + ", last_name=" + last_name + ", password="
