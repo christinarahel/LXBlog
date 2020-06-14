@@ -16,5 +16,5 @@
 
 9. Handle bad requests, incorrect input/output
 
-10 Testing
+10. Testing
 
